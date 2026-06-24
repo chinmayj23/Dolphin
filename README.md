@@ -78,11 +78,10 @@ THEN the matching countries follow a GDP-per-capita trajectory that differs from
 
 The trajectory plots show the subgroup trend against the global mean-centered baseline. The forest plots show the questions used to form the rules.
 
-Open the trajectory figures here:
+![Rule 1 trajectory](artifacts/world_bank_gdp/trajectories/rule_01_trajectory.png)
 
-```text
-artifacts/world_bank_gdp/trajectories/rule_01_trajectory.pdf
-artifacts/world_bank_gdp/trajectories/rule_02_trajectory.pdf
-artifacts/world_bank_gdp/trajectories/rule_03_trajectory.pdf
-artifacts/world_bank_gdp/trajectories/rule_04_trajectory.pdf
-```
+![Rule 2 trajectory](artifacts/world_bank_gdp/trajectories/rule_02_trajectory.png)
+
+![Rule 3 trajectory](artifacts/world_bank_gdp/trajectories/rule_03_trajectory.png)
+
+![Rule 4 trajectory](artifacts/world_bank_gdp/trajectories/rule_04_trajectory.png)
