@@ -1,0 +1,77 @@
+{
+  "data": {
+    "path": "data/world_bank_development_indicators.csv",
+    "id_col": "country",
+    "date_col": "date",
+    "remove_world_bank_aggregates": true,
+    "world_bank_entity_metadata": "configs/world_bank_entities.csv"
+  },
+  "output_dir": "outputs/world_bank_gdp",
+  "feature_engineering": {
+    "lags": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32],
+    "windows": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32],
+    "include_columns": [
+      "access_to_electricity%",
+      "birth_rate",
+      "death_rate",
+      "government_expenditure_on_education%",
+      "government_health_expenditure%",
+      "gini_index",
+      "human_capital_index",
+      "individuals_using_internet%",
+      "inflation_annual%",
+      "population_density",
+      "rural_population",
+      "tax_revenue%",
+      "trade_in_services%",
+      "voice_and_accountability_estimate"
+    ]
+  },
+  "methods": {
+    "trajtrack": {
+      "enabled": true,
+      "representation": "linear",
+      "grid_size": 25,
+      "min_points": 6,
+      "anomaly_metric": "wasserstein",
+      "divergence_metric": "euclidean",
+      "surrogate_n_estimators": 80,
+      "surrogate_max_depth": 4,
+      "surrogate_min_samples_leaf": 4,
+      "surrogate_max_features": "sqrt",
+      "seed": 42,
+      "surrogate_test_size": 0.25,
+      "forest_search_seeds": 1000,
+      "forest_selection_mode": "diversity_tolerance",
+      "forest_quality_tolerance": 0.05,
+      "forest_min_trees": 5,
+      "forest_max_trees": 10,
+      "forest_min_questions_per_tree": 6,
+      "forest_max_questions_per_tree": 18,
+      "forest_performance_quantile": 0.99,
+      "min_support": 0.02,
+      "max_support": 0.25,
+      "max_missing_frac": 0.2,
+      "top_k": 5,
+      "evaluation_anomaly_quantile": 0.9,
+      "coverage_decay": 0.2,
+      "support_exponent": 0.25,
+      "concentration_exponent": 0.5,
+      "max_concentration_ratio": 4.0,
+      "min_baseline_effect_size": 0.5,
+      "max_rule_jaccard": 0.7,
+      "min_rule_trajectory_distance": 0.25,
+      "max_rule_trajectory_correlation": 0.995
+    }
+  },
+  "targets": [
+    {
+      "name": "gdp_per_capita",
+      "mode": "ratio",
+      "numerator": "GDP_current_US",
+      "denominator": "population",
+      "output_col": "gdp_per_capita",
+      "two_tailed": true
+    }
+  ]
+}

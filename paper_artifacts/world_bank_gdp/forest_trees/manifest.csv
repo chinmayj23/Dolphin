@@ -1,0 +1,11 @@
+tree_rank,forest_index,depth,leaves,png,pdf,svg
+1,0,4,8,tree_01_idx_000.png,tree_01_idx_000.pdf,tree_01_idx_000.svg
+2,1,4,7,tree_02_idx_001.png,tree_02_idx_001.pdf,tree_02_idx_001.svg
+3,2,4,8,tree_03_idx_002.png,tree_03_idx_002.pdf,tree_03_idx_002.svg
+4,3,4,10,tree_04_idx_003.png,tree_04_idx_003.pdf,tree_04_idx_003.svg
+5,4,4,11,tree_05_idx_004.png,tree_05_idx_004.pdf,tree_05_idx_004.svg
+6,5,4,6,tree_06_idx_005.png,tree_06_idx_005.pdf,tree_06_idx_005.svg
+7,6,4,7,tree_07_idx_006.png,tree_07_idx_006.pdf,tree_07_idx_006.svg
+8,7,4,9,tree_08_idx_007.png,tree_08_idx_007.pdf,tree_08_idx_007.svg
+9,8,4,12,tree_09_idx_008.png,tree_09_idx_008.pdf,tree_09_idx_008.svg
+10,9,4,8,tree_10_idx_009.png,tree_10_idx_009.pdf,tree_10_idx_009.svg
