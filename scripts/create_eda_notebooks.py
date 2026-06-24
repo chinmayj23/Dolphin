@@ -85,9 +85,9 @@ def cmie_notebook() -> nbf.NotebookNode:
         ),
         code_cell(
             r"""
-CONFIG_PATH = REPO / "transition_subgroup_discovery" / "configs" / "cmie_dense_intervals.json"
+CONFIG_PATH = REPO / "transition_subgroup_discovery" / "configs" / "cmie_income.json"
 cfg = load_json(CONFIG_PATH)
-OUT_DIR = ensure_dir(REPO / "transition_subgroup_discovery" / "outputs" / "cmie_dense_intervals" / "eda")
+OUT_DIR = ensure_dir(REPO / "transition_subgroup_discovery" / "outputs" / "cmie_income" / "eda")
 
 data_path = REPO / cfg["data"]["path"]
 raw = pd.read_csv(data_path)
@@ -321,9 +321,9 @@ fig.savefig(OUT_DIR / "cmie_monthly_missingness_heatmap.png", dpi=300, bbox_inch
 plt.show()
 """
         ),
-        markdown_cell("## Dense Lag and Window Coverage"),
+        markdown_cell("## Lag and Window Coverage"),
         markdown_cell(
-            "The dense feature setting considers candidate lags and rolling windows every two "
+            "The feature setting considers candidate lags and rolling windows every two "
             "months. We keep intervals only when at least 80% of households have enough target "
             "history. This avoids building rule features at horizons that only a minority of "
             "households can support."
@@ -339,7 +339,7 @@ for k in range(2, 41, 2):
         "passes_80pct": (counts >= k + 1).mean() >= 0.8,
     })
 interval_coverage = pd.DataFrame(interval_rows)
-interval_coverage.to_csv(OUT_DIR / "cmie_dense_interval_coverage.csv", index=False)
+interval_coverage.to_csv(OUT_DIR / "cmie_interval_coverage.csv", index=False)
 interval_coverage
 """
         ),
@@ -353,7 +353,7 @@ ax.set_title("CMIE Target-History Coverage by Interval")
 ax.set_xlabel("Lag/window length in months")
 ax.set_ylabel("Share of households with enough target history")
 fig.tight_layout()
-fig.savefig(OUT_DIR / "cmie_dense_interval_coverage.png", dpi=300, bbox_inches="tight")
+fig.savefig(OUT_DIR / "cmie_interval_coverage.png", dpi=300, bbox_inches="tight")
 plt.show()
 """
         ),
@@ -441,7 +441,7 @@ plt.show()
         ),
         code_cell(
             r"""
-RESULT_DIR = REPO / "transition_subgroup_discovery" / "outputs" / "cmie_dense_intervals" / "total_income" / "trajtrack"
+RESULT_DIR = REPO / "transition_subgroup_discovery" / "outputs" / "cmie_income" / "total_income" / "trajtrack"
 rules = pd.read_csv(RESULT_DIR / "rules.csv")
 membership = pd.read_csv(RESULT_DIR / "membership.csv")
 
@@ -563,7 +563,7 @@ def world_bank_notebook() -> nbf.NotebookNode:
         markdown_cell(
             "This notebook is a self-contained audit of the World Bank GDP-per-capita case "
             "study used by DOLPHIN. It explains the entity-time structure, target construction, "
-            "country coverage, covariate missingness, dense lag/window feasibility, and the "
+            "country coverage, covariate missingness, lag/window feasibility, and the "
             "trajectory diagnostics used to validate the discovered subgroups."
         ),
         code_cell(COMMON_SETUP),
@@ -577,9 +577,9 @@ def world_bank_notebook() -> nbf.NotebookNode:
         ),
         code_cell(
             r"""
-CONFIG_PATH = REPO / "transition_subgroup_discovery" / "configs" / "world_bank_gdp_dense_intervals.json"
+CONFIG_PATH = REPO / "transition_subgroup_discovery" / "configs" / "world_bank_gdp.json"
 cfg = load_json(CONFIG_PATH)
-OUT_DIR = ensure_dir(REPO / "transition_subgroup_discovery" / "outputs" / "world_bank_gdp_dense_intervals" / "eda")
+OUT_DIR = ensure_dir(REPO / "transition_subgroup_discovery" / "outputs" / "world_bank_gdp" / "eda")
 
 data_path = REPO / cfg["data"]["path"]
 raw = pd.read_csv(data_path)
@@ -804,9 +804,9 @@ fig.savefig(OUT_DIR / "world_bank_yearly_missingness_heatmap.png", dpi=300, bbox
 plt.show()
 """
         ),
-        markdown_cell("## Dense Lag and Window Coverage"),
+        markdown_cell("## Lag and Window Coverage"),
         markdown_cell(
-            "Dense DOLPHIN features use lag and rolling-window lengths every two years. The "
+            "DOLPHIN features use lag and rolling-window lengths every two years. The "
             "coverage curve shows why the experiment keeps intervals up to 32 years: beyond "
             "that point, fewer than 80% of countries have enough target history."
         ),
@@ -821,7 +821,7 @@ for k in range(2, 65, 2):
         "passes_80pct": (counts >= k + 1).mean() >= 0.8,
     })
 interval_coverage = pd.DataFrame(interval_rows)
-interval_coverage.to_csv(OUT_DIR / "world_bank_dense_interval_coverage.csv", index=False)
+interval_coverage.to_csv(OUT_DIR / "world_bank_interval_coverage.csv", index=False)
 interval_coverage
 """
         ),
@@ -835,7 +835,7 @@ ax.set_title("World Bank GDP Target-History Coverage by Interval")
 ax.set_xlabel("Lag/window length in years")
 ax.set_ylabel("Share of countries with enough target history")
 fig.tight_layout()
-fig.savefig(OUT_DIR / "world_bank_dense_interval_coverage.png", dpi=300, bbox_inches="tight")
+fig.savefig(OUT_DIR / "world_bank_interval_coverage.png", dpi=300, bbox_inches="tight")
 plt.show()
 """
         ),
@@ -921,7 +921,7 @@ plt.show()
         ),
         code_cell(
             r"""
-RESULT_DIR = REPO / "transition_subgroup_discovery" / "outputs" / "world_bank_gdp_dense_intervals" / "gdp_per_capita" / "trajtrack"
+RESULT_DIR = REPO / "transition_subgroup_discovery" / "outputs" / "world_bank_gdp" / "gdp_per_capita" / "trajtrack"
 rules = pd.read_csv(RESULT_DIR / "rules.csv")
 membership = pd.read_csv(RESULT_DIR / "membership.csv")
 

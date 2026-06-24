@@ -1,0 +1,2 @@
+seed,r2,mae,separation_quality,n_trees,max_questions_per_tree,total_questions,n_candidate_rules,n_pareto_rules,n_diverse_rules,min_pairwise_trajectory_distance,mean_pairwise_trajectory_distance
+135,0.10678209578942677,7248.704916124141,5869.247219940019,6,9,39,42.0,21.0,3.0,0.3074667282870384,0.35777035862843737

@@ -10,7 +10,7 @@ The current implementation supports:
 - compact forest-based surrogate rule generation,
 - multi-interval lag/window feature engineering for longitudinal covariates,
 - rule-level trajectory diagnostics,
-- paper-oriented trajectory and tree visualizations,
+- trajectory and tree visualizations,
 - EDA notebooks for the World Bank and CMIE case studies.
 
 Internally, some modules and output folders still use the historical name `trajtrack`. Treat those as implementation names. The method name used in figures and documentation is **DOLPHIN**.
@@ -23,6 +23,7 @@ DOLPHIN/
   data/                     local input data, not tracked by Git
   notebooks/                runnable notebooks
   outputs/                  generated outputs, not tracked by Git
+  artifacts/                selected figures and result tables
   scripts/                  command-line runners and utilities
   src/tsd/                  source code
   README.md
@@ -49,14 +50,11 @@ python -m pip install -e .
 
 ## Data
 
-Data files are intentionally not committed to Git.
-
-Place input CSVs under:
+The repository includes the World Bank case-study CSV:
 
 ```text
 data/
   world_bank_development_indicators.csv
-  cmie_trajtrack_panel.csv
 ```
 
 The World Bank config also uses:
@@ -65,7 +63,9 @@ The World Bank config also uses:
 configs/world_bank_entities.csv
 ```
 
-This metadata file is included because it is small and is used to remove World Bank aggregate regions.
+This metadata file is used to remove World Bank aggregate regions.
+
+CMIE data is not included.
 
 ### Expected World Bank Columns
 
@@ -163,14 +163,14 @@ plots/                            per-rule trajectory plots
 forest_trees/                     selected surrogate forest trees
 ```
 
-The paper-ready subset is under:
+Selected outputs are under:
 
 ```text
-paper_artifacts/world_bank_gdp/
-paper_artifacts/cmie_income/
+artifacts/world_bank_gdp/
+artifacts/cmie_income/
 ```
 
-These folders intentionally contain only trajectories, clean forest trees, performance-vs-questions plots, rules, memberships, and metrics. KDE plots and distribution-level diagnostic plots are not included.
+These folders contain trajectories, clean forest trees, performance-vs-questions plots, rules, and metrics. KDE plots and distribution-level diagnostics are not included.
 
 ## EDA Notebooks
 
@@ -231,7 +231,7 @@ cd transition_subgroup_discovery
 git init
 git add README.md requirements.txt pyproject.toml .gitignore data/README.md
 git add configs/world_bank_gdp.json configs/cmie_income.json configs/world_bank_entities.csv
-git add src scripts notebooks paper_artifacts
+git add src scripts notebooks artifacts
 git status
 git commit -m "Initial DOLPHIN release"
 git branch -M main
@@ -239,7 +239,7 @@ git remote add origin <YOUR_GITHUB_REPO_URL>
 git push -u origin main
 ```
 
-Do not commit:
+Keep out of Git:
 
 ```text
 data/
@@ -253,6 +253,6 @@ These are ignored by `.gitignore`.
 
 ## Notes
 
-- CMIE data may be private or licensed. Keep it out of public Git.
+- Keep CMIE data out of Git.
 - Generated figures and outputs can be archived separately if needed.
 - The current implementation keeps `trajtrack` in some internal function and folder names for backward compatibility.
