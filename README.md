@@ -1,75 +1,134 @@
 # DOLPHIN
 
-**DOLPHIN** is a Python implementation of interpretable subgroup discovery for longitudinal data.
+**DOLPHIN** discovers interpretable subgroups in longitudinal data.
 
-DOLPHIN finds rule-defined subgroups whose target trajectories differ from a population trajectory baseline. The target trajectory is used to measure longitudinal exceptionality. The rules are formed only from independent explanatory covariates.
+DOLPHIN represents each entity by a target trajectory, measures how unusual that trajectory is relative to a population baseline, and learns compact rule sets over explanatory covariates. Rule conditions use only explanatory covariates. They describe which entities follow distinct longitudinal patterns.
 
-The current implementation supports:
+The repository contains the code and experiment assets for the DOLPHIN paper case studies.
 
-- continuous trajectory-based subgroup discovery,
-- compact forest-based surrogate rule generation,
-- multi-interval lag/window feature engineering for longitudinal covariates,
-- rule-level trajectory diagnostics,
-- trajectory and tree visualizations,
-- EDA notebooks for the World Bank and CMIE case studies.
+## Method
 
-Internally, some modules and output folders still use the historical name `trajtrack`. Treat those as implementation names. The method name used in figures and documentation is **DOLPHIN**.
+DOLPHIN runs the following pipeline:
+
+1. Build an entity-level target trajectory from panel data.
+2. Mean-center each trajectory to focus on temporal shape.
+3. Compute a global mean-centered trajectory baseline.
+4. Score each entity by its distance from the baseline trajectory.
+5. Engineer lag, rolling-window mean, change, and volatility features from explanatory covariates.
+6. Train compact random-forest surrogate models from covariates to trajectory anomaly scores.
+7. Select a forest by separation quality under a question-budget tolerance.
+8. Extract root-to-leaf paths as Boolean subgroup rules.
+9. Score each subgroup by trajectory divergence, subgroup size, concentration, and rule diversity.
+10. Export rules, trajectories, forest trees, and forest-selection diagnostics.
 
 ## Repository Layout
 
 ```text
-DOLPHIN/
-  configs/                  JSON experiment configs
-  data/                     local input data, not tracked by Git
-  notebooks/                runnable notebooks
-  outputs/                  generated outputs, not tracked by Git
-  artifacts/                selected figures and result tables
-  scripts/                  command-line runners and utilities
-  src/tsd/                  source code
-  README.md
-  requirements.txt
-  pyproject.toml
+configs/       Experiment configs
+data/          World Bank case-study data
+notebooks/     EDA and run notebooks
+scripts/       Command-line entry points
+src/tsd/       DOLPHIN source code
+artifacts/     Selected case-study outputs
 ```
 
 ## Installation
-
-Create and activate a Python environment, then install dependencies:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-```
-
-For editable local development:
-
-```powershell
 python -m pip install -e .
 ```
 
-## Data
+## Case Studies
 
-The repository includes the World Bank case-study CSV:
+### World Bank GDP Per Capita
 
-```text
-data/
-  world_bank_development_indicators.csv
+The World Bank case study uses country-year observations and discovers subgroups with distinct GDP-per-capita trajectories.
+
+```powershell
+python scripts/run_dolphin.py --config configs/world_bank_gdp.json --workspace-root .
 ```
 
-The World Bank config also uses:
+Output directory:
 
 ```text
-configs/world_bank_entities.csv
+outputs/world_bank_gdp/gdp_per_capita/trajtrack/
 ```
 
-This metadata file is used to remove World Bank aggregate regions.
+### CMIE Household Income
 
-CMIE data is not included.
+The CMIE case study uses household-month observations and discovers subgroups with distinct total-income trajectories.
 
-### Expected World Bank Columns
+```powershell
+python scripts/run_dolphin.py --config configs/cmie_income.json --workspace-root .
+```
 
-The GDP config expects at least:
+Output directory:
+
+```text
+outputs/cmie_income/total_income/trajtrack/
+```
+
+## Outputs
+
+Each run writes:
+
+```text
+rules.csv
+rules_natural_language.txt
+metrics.json
+membership.csv
+forest_summary.csv
+forest_selection.csv
+performance_vs_questions.{png,svg,pdf}
+plots/rule_XX_trajectory.{png,svg,pdf}
+forest_trees/tree_XX_idx_YYY.{png,svg,pdf}
+```
+
+Selected case-study outputs are stored in:
+
+```text
+artifacts/world_bank_gdp/
+artifacts/cmie_income/
+```
+
+## Notebooks
+
+```text
+notebooks/eda_world_bank_gdp_dolphin.ipynb
+notebooks/eda_cmie_dolphin.ipynb
+notebooks/run_cmie_trajtrack.ipynb
+notebooks/run_world_bank.ipynb
+```
+
+Regenerate the EDA notebooks:
+
+```powershell
+python scripts/create_eda_notebooks.py
+```
+
+Execute the EDA notebooks:
+
+```powershell
+python -m jupyter nbconvert --to notebook --execute notebooks/eda_world_bank_gdp_dolphin.ipynb --inplace
+python -m jupyter nbconvert --to notebook --execute notebooks/eda_cmie_dolphin.ipynb --inplace
+```
+
+## Plot Regeneration
+
+Regenerate trajectory plots from existing rule and membership outputs:
+
+```powershell
+python scripts/regenerate_dolphin_trajectory_plots.py --config configs/world_bank_gdp.json --target gdp_per_capita --workspace-root .
+python scripts/regenerate_dolphin_trajectory_plots.py --config configs/cmie_income.json --target total_income --workspace-root .
+```
+
+## Data Schema
+
+World Bank config:
 
 ```text
 country
@@ -92,15 +151,7 @@ trade_in_services%
 voice_and_accountability_estimate
 ```
 
-GDP per capita is computed inside the pipeline as:
-
-```text
-GDP_current_US / population
-```
-
-### Expected CMIE Columns
-
-The CMIE config expects at least:
+CMIE config:
 
 ```text
 HH_ID
@@ -113,146 +164,10 @@ capital_income_share
 TOT_N
 EMPLOYED_N
 MAX_EDU_LEVEL
-```
-
-Optional static one-hot prefixes:
-
-```text
 dominant_source_*
 income_quintile_*
 ```
 
-## Run DOLPHIN
+## Implementation Notes
 
-Run from the repository root.
-
-### World Bank GDP Case Study
-
-```powershell
-python scripts/run_dolphin.py --config configs/world_bank_gdp.json --workspace-root .
-```
-
-Outputs are written to:
-
-```text
-outputs/world_bank_gdp/gdp_per_capita/trajtrack/
-```
-
-### CMIE Income Case Study
-
-```powershell
-python scripts/run_dolphin.py --config configs/cmie_income.json --workspace-root .
-```
-
-Outputs are written to:
-
-```text
-outputs/cmie_income/total_income/trajtrack/
-```
-
-## Main Outputs
-
-Each run writes a complete local output directory:
-
-```text
-rules.csv                         selected subgroup rules and metrics
-rules_natural_language.txt        readable rule explanations
-membership.csv                    entity-by-rule membership matrix
-metrics.json                      run-level metrics
-plots/                            per-rule trajectory plots
-forest_trees/                     selected surrogate forest trees
-```
-
-Selected outputs are under:
-
-```text
-artifacts/world_bank_gdp/
-artifacts/cmie_income/
-```
-
-These folders contain trajectories, clean forest trees, performance-vs-questions plots, rules, and metrics. KDE plots and distribution-level diagnostics are not included.
-
-## EDA Notebooks
-
-The EDA notebooks explain the datasets, target construction, temporal coverage, missingness, feature availability, trajectory diagnostics, and validation of discovered rules.
-
-```text
-notebooks/eda_world_bank_gdp_dolphin.ipynb
-notebooks/eda_cmie_dolphin.ipynb
-```
-
-Regenerate the notebooks from source:
-
-```powershell
-python scripts/create_eda_notebooks.py
-```
-
-Execute a notebook:
-
-```powershell
-python -m jupyter nbconvert --to notebook --execute notebooks/eda_world_bank_gdp_dolphin.ipynb --inplace
-python -m jupyter nbconvert --to notebook --execute notebooks/eda_cmie_dolphin.ipynb --inplace
-```
-
-## Regenerate Trajectory Plots Only
-
-If rules and memberships already exist, regenerate trajectory plots without rerunning the full forest search:
-
-```powershell
-python scripts/regenerate_dolphin_trajectory_plots.py --config configs/world_bank_gdp.json --target gdp_per_capita --workspace-root .
-python scripts/regenerate_dolphin_trajectory_plots.py --config configs/cmie_income.json --target total_income --workspace-root .
-```
-
-## Algorithm Summary
-
-For each entity, DOLPHIN builds a target trajectory and mean-centers it to emphasize temporal shape. It computes a global mean-centered baseline trajectory. Each entity receives a continuous anomaly score based on its distance from this baseline.
-
-DOLPHIN then trains many compact random-forest surrogate models using only explanatory covariates. It evaluates candidate forests by separation quality and complexity, extracts root-to-leaf paths as Boolean candidate rules, and scores each rule by how far the matched subgroup trajectory is from the global baseline.
-
-Rule quality combines:
-
-```text
-trajectory divergence
-subgroup size
-within-subgroup concentration
-overlap and trajectory-diversity filtering
-```
-
-The target trajectory is never used as a rule condition.
-
-## Git Guidance
-
-Pushing only this directory is enough if you want a clean standalone DOLPHIN repository.
-
-Recommended:
-
-```powershell
-cd transition_subgroup_discovery
-git init
-git add README.md requirements.txt pyproject.toml .gitignore data/README.md
-git add configs/world_bank_gdp.json configs/cmie_income.json configs/world_bank_entities.csv
-git add src scripts notebooks artifacts
-git status
-git commit -m "Initial DOLPHIN release"
-git branch -M main
-git remote add origin <YOUR_GITHUB_REPO_URL>
-git push -u origin main
-```
-
-Keep out of Git:
-
-```text
-data/
-outputs/
-*.csv data dumps
-__pycache__/
-.ipynb_checkpoints/
-```
-
-These are ignored by `.gitignore`.
-
-## Notes
-
-- Keep CMIE data out of Git.
-- Generated figures and outputs can be archived separately if needed.
-- The current implementation keeps `trajtrack` in some internal function and folder names for backward compatibility.
+Some module names and output folders use the internal name `trajtrack`. The method name used in the paper and generated figures is **DOLPHIN**.
