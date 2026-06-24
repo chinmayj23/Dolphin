@@ -28,7 +28,7 @@
     ]
   },
   "methods": {
-    "trajtrack": {
+    "dolphin": {
       "enabled": true,
       "representation": "linear",
       "grid_size": 25,

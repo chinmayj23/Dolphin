@@ -17,11 +17,11 @@ sys.path.insert(0, str(REPO / "src"))
 from tsd.features import apply_target, build_temporal_features
 from tsd.io import ensure_dir
 from tsd.preprocessing import preprocess_data
-from tsd.trajtrack import (
+from tsd.dolphin import (
     _build_entity_feature_table,
     _build_trajectories,
     _entity_anomaly_scores,
-    run_trajtrack,
+    run_dolphin,
 )
 
 
@@ -97,7 +97,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default=str(REPO / "configs" / "world_bank.json"))
     parser.add_argument("--search-seeds", type=int, default=150)
-    parser.add_argument("--output-dir", default=str(REPO / "outputs" / "world_bank" / "trajtrack_sweep"))
+    parser.add_argument("--output-dir", default=str(REPO / "outputs" / "world_bank" / "dolphin_sweep"))
     parser.add_argument("--targets", nargs="*", default=None)
     parser.add_argument("--scenarios", nargs="*", default=None)
     args = parser.parse_args()
@@ -127,7 +127,7 @@ def main() -> None:
             feature_cfg=cfg["feature_engineering"],
             exclude_cols=target_excludes,
         )
-        base = copy.deepcopy(cfg["methods"]["trajtrack"])
+        base = copy.deepcopy(cfg["methods"]["dolphin"])
         base["forest_search_seeds"] = args.search_seeds
         profiles.extend(_profile_target(table, id_col, target_col, feature_names, base, target_name))
 
@@ -137,7 +137,7 @@ def main() -> None:
             scenario_cfg = copy.deepcopy(base)
             scenario_cfg.update(overrides)
             scenario_dir = output_root / target_name / scenario_name
-            metrics = run_trajtrack(table, id_col, target_col, feature_names, scenario_cfg, scenario_dir)
+            metrics = run_dolphin(table, id_col, target_col, feature_names, scenario_cfg, scenario_dir)
             result = {
                 "target": target_name,
                 "scenario": scenario_name,
@@ -238,7 +238,7 @@ def _rule_tail_summary(output_dir: Path) -> dict:
 
 
 def _write_report(summary: pd.DataFrame, profile: pd.DataFrame, path: Path) -> None:
-    lines = ["# TrajTrack Hyperparameter Sweep", ""]
+    lines = ["# DOLPHIN Hyperparameter Sweep", ""]
     groups = summary.groupby("target") if "target" in summary.columns else []
     for target, group in groups:
         ranked = group.sort_values(

@@ -16,7 +16,7 @@ sys.path.insert(0, str(REPO / "src"))
 from tsd.features import apply_target, build_temporal_features
 from tsd.io import ensure_dir
 from tsd.preprocessing import preprocess_data
-from tsd.trajtrack import run_trajtrack_binary
+from tsd.dolphin import run_dolphin_binary
 
 
 SCENARIOS = {
@@ -70,7 +70,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default=str(REPO / "configs" / "world_bank.json"))
     parser.add_argument("--search-seeds", type=int, default=150)
-    parser.add_argument("--output-dir", default=str(REPO / "outputs" / "world_bank" / "trajtrack_binary_sweep"))
+    parser.add_argument("--output-dir", default=str(REPO / "outputs" / "world_bank" / "dolphin_binary_sweep"))
     parser.add_argument("--targets", nargs="*", default=None)
     parser.add_argument("--scenarios", nargs="*", default=None)
     args = parser.parse_args()
@@ -97,7 +97,7 @@ def main() -> None:
             feature_cfg=cfg["feature_engineering"],
             exclude_cols=target_excludes,
         )
-        base = copy.deepcopy(cfg["methods"]["trajtrack_binary"])
+        base = copy.deepcopy(cfg["methods"]["dolphin_binary"])
         base["forest_search_seeds"] = args.search_seeds
         for scenario_name, overrides in SCENARIOS.items():
             if args.scenarios and scenario_name not in args.scenarios:
@@ -106,7 +106,7 @@ def main() -> None:
             scenario_cfg.update(overrides)
             scenario_dir = output_root / target_name / scenario_name
             print(f"{target_name} / {scenario_name}", flush=True)
-            metrics = run_trajtrack_binary(table, id_col, target_col, feature_names, scenario_cfg, scenario_dir)
+            metrics = run_dolphin_binary(table, id_col, target_col, feature_names, scenario_cfg, scenario_dir)
             result = {
                 "target": target_name,
                 "scenario": scenario_name,
@@ -158,7 +158,7 @@ def _rule_summary(output_dir: Path) -> dict:
 
 
 def _write_report(summary: pd.DataFrame, path: Path) -> None:
-    lines = ["# TrajTrack Binary Hyperparameter Sweep", ""]
+    lines = ["# DOLPHIN Binary Hyperparameter Sweep", ""]
     rank_cols = [
         "scenario",
         "n_interesting_entities",

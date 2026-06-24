@@ -16,9 +16,9 @@ MAX_EDU_ORDER = {
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Prepare repaired CMIE panel for TrajTrack.")
-    parser.add_argument("--input", default="transition_subgroup_discovery/data/cmie_trajtrack_panel.csv")
-    parser.add_argument("--output", default="transition_subgroup_discovery/data/cmie_trajtrack_panel.csv")
+    parser = argparse.ArgumentParser(description="Prepare repaired CMIE panel for DOLPHIN.")
+    parser.add_argument("--input", default="transition_subgroup_discovery/data/cmie_dolphin_panel.csv")
+    parser.add_argument("--output", default="transition_subgroup_discovery/data/cmie_dolphin_panel.csv")
     args = parser.parse_args()
 
     src = Path(args.input)

@@ -1,6 +1,6 @@
 {
   "data": {
-    "path": "data/cmie_trajtrack_panel.csv",
+    "path": "data/cmie_dolphin_panel.csv",
     "id_col": "HH_ID",
     "date_col": "MONTH_SLOT_DATE"
   },
@@ -28,7 +28,7 @@
     ]
   },
   "methods": {
-    "trajtrack": {
+    "dolphin": {
       "enabled": true,
       "time_unit_label": "month",
       "representation": "linear",
@@ -65,7 +65,7 @@
       "min_rule_trajectory_distance": 0.08,
       "max_rule_trajectory_correlation": 0.995
     },
-    "trajtrack_binary": {
+    "dolphin_binary": {
       "enabled": false
     }
   },

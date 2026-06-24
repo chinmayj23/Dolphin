@@ -17,18 +17,18 @@ def main() -> None:
     from tsd.features import apply_target, build_temporal_features
     from tsd.io import load_json
     from tsd.preprocessing import preprocess_data
-    from tsd.trajtrack import (
+    from tsd.dolphin import (
         _build_trajectories,
         _entity_anomaly_scores,
         _save_rule_plots,
         _set_pretty_time_unit,
     )
 
-    parser = argparse.ArgumentParser(description="Regenerate FLAIR trajectory plots from existing memberships.")
+    parser = argparse.ArgumentParser(description="Regenerate DOLPHIN trajectory plots from existing memberships.")
     parser.add_argument("--config", required=True)
     parser.add_argument("--workspace-root", default=str(workspace))
     parser.add_argument("--target", default=None)
-    parser.add_argument("--method-dir", default="trajtrack")
+    parser.add_argument("--method-dir", default="dolphin")
     args = parser.parse_args()
 
     root = Path(args.workspace_root).resolve()
@@ -43,7 +43,7 @@ def main() -> None:
 
     raw = pd.read_csv(data_path)
     raw, _ = preprocess_data(raw, data_cfg, root)
-    method_cfg = cfg["methods"]["trajtrack"]
+    method_cfg = cfg["methods"]["dolphin"]
     _set_pretty_time_unit(method_cfg.get("time_unit_label"))
 
     for target_cfg in cfg["targets"]:

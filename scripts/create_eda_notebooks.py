@@ -380,7 +380,7 @@ feature_missing = X.isna().mean().sort_values()
 feature_report = pd.DataFrame({
     "feature": feature_missing.index,
     "missing_fraction": feature_missing.values,
-    "retained_at_80pct": feature_missing.values < cfg["methods"]["trajtrack"]["max_missing_frac"],
+    "retained_at_80pct": feature_missing.values < cfg["methods"]["dolphin"]["max_missing_frac"],
 })
 feature_report.to_csv(OUT_DIR / "cmie_engineered_feature_availability.csv", index=False)
 print("Engineered features:", len(feature_names))
@@ -441,7 +441,7 @@ plt.show()
         ),
         code_cell(
             r"""
-RESULT_DIR = REPO / "transition_subgroup_discovery" / "outputs" / "cmie_income" / "total_income" / "trajtrack"
+RESULT_DIR = REPO / "transition_subgroup_discovery" / "outputs" / "cmie_income" / "total_income" / "dolphin"
 rules = pd.read_csv(RESULT_DIR / "rules.csv")
 membership = pd.read_csv(RESULT_DIR / "membership.csv")
 
@@ -861,7 +861,7 @@ feature_missing = X.isna().mean().sort_values()
 feature_report = pd.DataFrame({
     "feature": feature_missing.index,
     "missing_fraction": feature_missing.values,
-    "retained_at_80pct": feature_missing.values < cfg["methods"]["trajtrack"]["max_missing_frac"],
+    "retained_at_80pct": feature_missing.values < cfg["methods"]["dolphin"]["max_missing_frac"],
 })
 feature_report.to_csv(OUT_DIR / "world_bank_engineered_feature_availability.csv", index=False)
 print("Engineered features:", len(feature_names))
@@ -921,7 +921,7 @@ plt.show()
         ),
         code_cell(
             r"""
-RESULT_DIR = REPO / "transition_subgroup_discovery" / "outputs" / "world_bank_gdp" / "gdp_per_capita" / "trajtrack"
+RESULT_DIR = REPO / "transition_subgroup_discovery" / "outputs" / "world_bank_gdp" / "gdp_per_capita" / "dolphin"
 rules = pd.read_csv(RESULT_DIR / "rules.csv")
 membership = pd.read_csv(RESULT_DIR / "membership.csv")
 

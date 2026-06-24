@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from run_trajtrack import main
+from run_dolphin_core import main
 
 
 if __name__ == "__main__":

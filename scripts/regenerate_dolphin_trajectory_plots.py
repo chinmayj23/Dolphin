@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from regenerate_flair_trajectory_plots import main
+from regenerate_dolphin_trajectory_plots_core import main
 
 
 if __name__ == "__main__":

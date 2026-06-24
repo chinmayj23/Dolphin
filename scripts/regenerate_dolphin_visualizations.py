@@ -14,7 +14,7 @@ def main() -> None:
     from tsd.features import apply_target, build_temporal_features
     from tsd.io import load_json
     from tsd.preprocessing import preprocess_data
-    from tsd.trajtrack import (
+    from tsd.dolphin import (
         _build_trajectories,
         _save_rule_plots,
         _save_syflow_distribution_overview,
@@ -36,7 +36,7 @@ def main() -> None:
             feature_cfg=cfg.get("feature_engineering", {}),
             exclude_cols=target_excludes,
         )
-        for method in ["trajtrack", "trajtrack_binary"]:
+        for method in ["dolphin", "dolphin_binary"]:
             if not cfg["methods"].get(method, {}).get("enabled", False):
                 continue
             method_cfg = cfg["methods"][method]

@@ -16,10 +16,10 @@ def main() -> None:
 
     from tsd.features import apply_target, build_temporal_features
     from tsd.io import ensure_dir, load_json
-    from tsd.trajtrack import run_trajtrack
+    from tsd.dolphin import run_dolphin
 
     cfg = load_json(repo / "configs" / "cmie.json")
-    cfg["data"]["path"] = str(repo / "data" / "cmie_trajtrack_panel.csv")
+    cfg["data"]["path"] = str(repo / "data" / "cmie_dolphin_panel.csv")
     output_root = ensure_dir(repo / "outputs" / "cmie_sweep")
 
     scenarios = [
@@ -62,12 +62,12 @@ def main() -> None:
         run_cfg = copy.deepcopy(cfg)
         run_cfg["feature_engineering"]["lags"] = scenario["lags"]
         run_cfg["feature_engineering"]["windows"] = scenario["windows"]
-        run_cfg["methods"]["trajtrack"]["surrogate_max_depth"] = scenario["max_depth"]
-        run_cfg["methods"]["trajtrack"]["min_support"] = scenario["min_support"]
-        run_cfg["methods"]["trajtrack"]["forest_max_questions_per_tree"] = scenario["max_questions"]
-        run_cfg["methods"]["trajtrack"]["min_rule_trajectory_distance"] = scenario["min_distance"]
-        run_cfg["methods"]["trajtrack"]["forest_search_seeds"] = 80
-        run_cfg["methods"]["trajtrack"]["time_unit_label"] = "month"
+        run_cfg["methods"]["dolphin"]["surrogate_max_depth"] = scenario["max_depth"]
+        run_cfg["methods"]["dolphin"]["min_support"] = scenario["min_support"]
+        run_cfg["methods"]["dolphin"]["forest_max_questions_per_tree"] = scenario["max_questions"]
+        run_cfg["methods"]["dolphin"]["min_rule_trajectory_distance"] = scenario["min_distance"]
+        run_cfg["methods"]["dolphin"]["forest_search_seeds"] = 80
+        run_cfg["methods"]["dolphin"]["time_unit_label"] = "month"
 
         work, target_col, target_excludes = apply_target(raw, target_cfg)
         table, feature_names = build_temporal_features(
@@ -78,14 +78,14 @@ def main() -> None:
             feature_cfg=run_cfg["feature_engineering"],
             exclude_cols=target_excludes,
         )
-        out_dir = output_root / scenario["name"] / target_cfg["name"] / "trajtrack"
+        out_dir = output_root / scenario["name"] / target_cfg["name"] / "dolphin"
         print(f"Running {scenario['name']} with {len(feature_names)} temporal features", flush=True)
-        metrics = run_trajtrack(
+        metrics = run_dolphin(
             table=table,
             id_col=run_cfg["data"]["id_col"],
             target_col=target_col,
             feature_names=feature_names,
-            cfg=run_cfg["methods"]["trajtrack"],
+            cfg=run_cfg["methods"]["dolphin"],
             output_dir=out_dir,
         )
         rules_path = out_dir / "rules.csv"

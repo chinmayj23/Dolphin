@@ -55,7 +55,7 @@ python scripts/run_dolphin.py --config configs/world_bank_gdp.json --workspace-r
 Output directory:
 
 ```text
-outputs/world_bank_gdp/gdp_per_capita/trajtrack/
+outputs/world_bank_gdp/gdp_per_capita/dolphin/
 ```
 
 ### CMIE Household Income
@@ -69,7 +69,7 @@ python scripts/run_dolphin.py --config configs/cmie_income.json --workspace-root
 Output directory:
 
 ```text
-outputs/cmie_income/total_income/trajtrack/
+outputs/cmie_income/total_income/dolphin/
 ```
 
 ## Outputs
@@ -100,7 +100,7 @@ artifacts/cmie_income/
 ```text
 notebooks/eda_world_bank_gdp_dolphin.ipynb
 notebooks/eda_cmie_dolphin.ipynb
-notebooks/run_cmie_trajtrack.ipynb
+notebooks/run_cmie_dolphin.ipynb
 notebooks/run_world_bank.ipynb
 ```
 
@@ -167,7 +167,3 @@ MAX_EDU_LEVEL
 dominant_source_*
 income_quintile_*
 ```
-
-## Implementation Notes
-
-Some module names and output folders use the internal name `trajtrack`. The method name used in the paper and generated figures is **DOLPHIN**.

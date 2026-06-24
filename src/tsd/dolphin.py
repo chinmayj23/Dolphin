@@ -60,7 +60,7 @@ class TreeEnsemble:
     estimators_: list[DecisionTreeRegressor]
 
 
-def run_trajtrack(
+def run_dolphin(
     table: pd.DataFrame,
     id_col: str,
     target_col: str,
@@ -289,7 +289,7 @@ def run_trajtrack(
     return metrics
 
 
-def run_trajtrack_binary(
+def run_dolphin_binary(
     table: pd.DataFrame,
     id_col: str,
     target_col: str,
@@ -690,7 +690,7 @@ def _build_trajectories(
         raw_lookup[str(entity)] = {"year": x.tolist(), "target": y.tolist()}
 
     if not trajectories:
-        raise ValueError("TrajTrack could not build any usable trajectories.")
+        raise ValueError("DOLPHIN could not build any usable trajectories.")
     return {
         "entity_ids": [str(x) for x in entity_ids],
         "trajectories": np.vstack(trajectories),
@@ -1444,7 +1444,7 @@ def _save_surrogate_forest_trees(
     manifest = []
     for rank, tree_index in enumerate(selected_indices, start=1):
         tree = forest.estimators_[tree_index]
-        leaf_summary = _trajtrack_leaf_summary(
+        leaf_summary = _dolphin_leaf_summary(
             tree,
             X,
             entity_ids,
@@ -1458,7 +1458,7 @@ def _save_surrogate_forest_trees(
         save_graphviz_style_tree(
             tree,
             feature_names,
-            leaf_label=lambda node, summary=leaf_summary: _trajtrack_leaf_label(summary[node], target_col),
+            leaf_label=lambda node, summary=leaf_summary: _dolphin_leaf_label(summary[node], target_col),
             leaf_color=lambda node, summary=leaf_summary: "#f3a6a0" if summary[node]["high_anomaly"] else "#b9d8ee",
             title=f"DOLPHIN surrogate tree {rank} (forest index {tree_index})",
             output_base=base,
@@ -1478,7 +1478,7 @@ def _save_surrogate_forest_trees(
     pd.DataFrame(manifest).to_csv(output_dir / "manifest.csv", index=False)
 
 
-def _trajtrack_leaf_label(row: dict, target_col: str) -> str:
+def _dolphin_leaf_label(row: dict, target_col: str) -> str:
     status = "HIGH ANOMALY" if row.get("high_anomaly") else "LOW/MID ANOMALY"
     change = row.get("target_change", np.nan)
     global_change = row.get("global_target_change", np.nan)
@@ -1491,7 +1491,7 @@ def _trajtrack_leaf_label(row: dict, target_col: str) -> str:
     return label
 
 
-def _trajtrack_leaf_summary(
+def _dolphin_leaf_summary(
     tree: DecisionTreeRegressor,
     X: np.ndarray,
     entity_ids: list[str],
@@ -1532,7 +1532,7 @@ def _trajtrack_leaf_summary(
     return result
 
 
-def _rewrite_trajtrack_tree_labels(
+def _rewrite_dolphin_tree_labels(
     artists,
     tree: DecisionTreeRegressor,
     feature_names: list[str],

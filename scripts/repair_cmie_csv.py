@@ -10,7 +10,7 @@ import pandas as pd
 def main() -> None:
     parser = argparse.ArgumentParser(description="Repair copy-pasted CMIE CSV lines wrapped in quotes.")
     parser.add_argument("--input", default="transition_subgroup_discovery/datax.csv")
-    parser.add_argument("--output", default="transition_subgroup_discovery/data/cmie_trajtrack_panel.csv")
+    parser.add_argument("--output", default="transition_subgroup_discovery/data/cmie_dolphin_panel.csv")
     args = parser.parse_args()
 
     src = Path(args.input)

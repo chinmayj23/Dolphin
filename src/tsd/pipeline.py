@@ -14,7 +14,7 @@ from .plotting import save_distribution_plot, save_numeric_transition_plots
 from .preprocessing import preprocess_data
 from .rf_rules import run_rf_module
 from .spans import build_transition_spans, build_value_spans
-from .trajtrack import run_trajtrack, run_trajtrack_binary
+from .dolphin import run_dolphin, run_dolphin_binary
 
 
 def run_pipeline(config_path: str | Path, workspace_root: str | Path | None = None) -> None:
@@ -80,20 +80,20 @@ def run_pipeline(config_path: str | Path, workspace_root: str | Path | None = No
                 "numeric_transition",
             )
 
-        if cfg.get("methods", {}).get("trajtrack", {}).get("enabled", True):
-            method_cfg = cfg["methods"]["trajtrack"]
-            traj_metrics = run_trajtrack(
+        if cfg.get("methods", {}).get("dolphin", {}).get("enabled", True):
+            method_cfg = cfg["methods"]["dolphin"]
+            traj_metrics = run_dolphin(
                 table=table,
                 id_col=id_col,
                 target_col=target_col,
                 feature_names=feature_names,
                 cfg=method_cfg,
-                output_dir=target_dir / "trajtrack",
+                output_dir=target_dir / "dolphin",
             )
             summary.append(
                 {
                     "target": target_name,
-                    "method": "trajtrack",
+                    "method": "dolphin",
                     "rows": int(len(table)),
                     "interesting_rows": None,
                     "support": None,
@@ -102,27 +102,27 @@ def run_pipeline(config_path: str | Path, workspace_root: str | Path | None = No
                     "span_support": None,
                     "rf_balanced_accuracy": None,
                     "rf_f1": None,
-                    "trajtrack_entities": traj_metrics.get("n_entities"),
-                    "trajtrack_rules": traj_metrics.get("n_selected_rules"),
-                    "trajtrack_top_quality": traj_metrics.get("top_quality"),
-                    "trajtrack_top_divergence": traj_metrics.get("top_divergence"),
+                    "dolphin_entities": traj_metrics.get("n_entities"),
+                    "dolphin_rules": traj_metrics.get("n_selected_rules"),
+                    "dolphin_top_quality": traj_metrics.get("top_quality"),
+                    "dolphin_top_divergence": traj_metrics.get("top_divergence"),
                 }
             )
 
-        if cfg.get("methods", {}).get("trajtrack_binary", {}).get("enabled", False):
-            method_cfg = cfg["methods"]["trajtrack_binary"]
-            binary_metrics = run_trajtrack_binary(
+        if cfg.get("methods", {}).get("dolphin_binary", {}).get("enabled", False):
+            method_cfg = cfg["methods"]["dolphin_binary"]
+            binary_metrics = run_dolphin_binary(
                 table=table,
                 id_col=id_col,
                 target_col=target_col,
                 feature_names=feature_names,
                 cfg=method_cfg,
-                output_dir=target_dir / "trajtrack_binary",
+                output_dir=target_dir / "dolphin_binary",
             )
             summary.append(
                 {
                     "target": target_name,
-                    "method": "trajtrack_binary",
+                    "method": "dolphin_binary",
                     "rows": int(len(table)),
                     "interesting_rows": binary_metrics.get("n_interesting_entities"),
                     "support": binary_metrics.get("interesting_support"),
@@ -131,10 +131,10 @@ def run_pipeline(config_path: str | Path, workspace_root: str | Path | None = No
                     "span_support": None,
                     "rf_balanced_accuracy": binary_metrics.get("surrogate_balanced_accuracy"),
                     "rf_f1": binary_metrics.get("surrogate_f1"),
-                    "trajtrack_entities": binary_metrics.get("n_entities"),
-                    "trajtrack_rules": binary_metrics.get("n_selected_rules"),
-                    "trajtrack_top_quality": binary_metrics.get("top_quality"),
-                    "trajtrack_top_divergence": binary_metrics.get("top_divergence"),
+                    "dolphin_entities": binary_metrics.get("n_entities"),
+                    "dolphin_rules": binary_metrics.get("n_selected_rules"),
+                    "dolphin_top_quality": binary_metrics.get("top_quality"),
+                    "dolphin_top_divergence": binary_metrics.get("top_divergence"),
                 }
             )
 

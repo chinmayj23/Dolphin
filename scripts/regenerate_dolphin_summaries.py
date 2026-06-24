@@ -11,7 +11,7 @@ def main() -> None:
     repo = Path(__file__).resolve().parents[1]
     workspace = repo.parent
     sys.path.insert(0, str(repo / "src"))
-    from tsd.trajtrack import _save_subgroup_evidence_summary
+    from tsd.dolphin import _save_subgroup_evidence_summary
 
     raw = pd.read_csv(workspace / "wbd" / "world_bank_development_indicators.csv")
     raw["date"] = pd.to_datetime(raw["date"], errors="coerce")
@@ -24,7 +24,7 @@ def main() -> None:
         "gdp_per_capita": "gdp_per_capita",
     }
     for target_name, target_col in targets.items():
-        out_dir = output_root / target_name / "trajtrack"
+        out_dir = output_root / target_name / "dolphin"
         membership = pd.read_csv(out_dir / "membership.csv")
         rules_frame = pd.read_csv(out_dir / "rules.csv")
         entity_ids = membership["entity"].astype(str).tolist()

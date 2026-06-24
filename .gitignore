@@ -18,8 +18,8 @@ data/*
 outputs/
 datax.csv
 cmie_panel.csv
-cmie_trajtrack_panel.csv
-data/cmie_trajtrack_panel.csv
+cmie_dolphin_panel.csv
+data/cmie_dolphin_panel.csv
 artifacts/cmie_income/membership.csv
 *.tmp
 
