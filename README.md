@@ -1,38 +1,12 @@
 # DOLPHIN
 
-**DOLPHIN** discovers interpretable subgroups in longitudinal data.
+DOLPHIN discovers interpretable subgroups in longitudinal data.
 
-DOLPHIN represents each entity by a target trajectory, measures how unusual that trajectory is relative to a population baseline, and learns compact rule sets over explanatory covariates. Rule conditions use only explanatory covariates. They describe which entities follow distinct longitudinal patterns.
+Given a panel dataset, DOLPHIN compares each entity's target trajectory with the population trajectory baseline. It then learns simple rules over explanatory variables that describe entities with distinct trajectory shapes.
 
-The repository contains the code and experiment assets for the DOLPHIN paper case studies.
+This repository includes a World Bank GDP-per-capita example.
 
-## Method
-
-DOLPHIN runs the following pipeline:
-
-1. Build an entity-level target trajectory from panel data.
-2. Mean-center each trajectory to focus on temporal shape.
-3. Compute a global mean-centered trajectory baseline.
-4. Score each entity by its distance from the baseline trajectory.
-5. Engineer lag, rolling-window mean, change, and volatility features from explanatory covariates.
-6. Train compact random-forest surrogate models from covariates to trajectory anomaly scores.
-7. Select a forest by separation quality under a question-budget tolerance.
-8. Extract root-to-leaf paths as Boolean subgroup rules.
-9. Score each subgroup by trajectory divergence, subgroup size, concentration, and rule diversity.
-10. Export rules, trajectories, forest trees, and forest-selection diagnostics.
-
-## Repository Layout
-
-```text
-configs/       Experiment configs
-data/          World Bank case-study data
-notebooks/     EDA and run notebooks
-scripts/       Command-line entry points
-src/tsd/       DOLPHIN source code
-artifacts/     Selected case-study outputs
-```
-
-## Installation
+## Install
 
 ```powershell
 python -m venv .venv
@@ -42,128 +16,64 @@ python -m pip install -r requirements.txt
 python -m pip install -e .
 ```
 
-## Case Studies
-
-### World Bank GDP Per Capita
-
-The World Bank case study uses country-year observations and discovers subgroups with distinct GDP-per-capita trajectories.
+## Run the World Bank Example
 
 ```powershell
 python scripts/run_dolphin.py --config configs/world_bank_gdp.json --workspace-root .
 ```
 
-Output directory:
+The run uses:
+
+```text
+data/world_bank_development_indicators.csv
+configs/world_bank_gdp.json
+```
+
+Outputs are written to:
 
 ```text
 outputs/world_bank_gdp/gdp_per_capita/dolphin/
 ```
 
-### CMIE Household Income
+## Main Results
 
-The CMIE case study uses household-month observations and discovers subgroups with distinct total-income trajectories.
-
-```powershell
-python scripts/run_dolphin.py --config configs/cmie_income.json --workspace-root .
-```
-
-Output directory:
-
-```text
-outputs/cmie_income/total_income/dolphin/
-```
-
-## Outputs
-
-Each run writes:
+After the run, the most useful files are:
 
 ```text
 rules.csv
 rules_natural_language.txt
 metrics.json
-membership.csv
-forest_summary.csv
-forest_selection.csv
-performance_vs_questions.{png,svg,pdf}
-plots/rule_XX_trajectory.{png,svg,pdf}
-forest_trees/tree_XX_idx_YYY.{png,svg,pdf}
+performance_vs_questions.pdf
+plots/rule_XX_trajectory.pdf
+forest_trees/tree_XX_idx_YYY.pdf
 ```
 
-Selected case-study outputs are stored in:
+The curated result files used for the World Bank case study are also available in:
 
 ```text
 artifacts/world_bank_gdp/
-artifacts/cmie_income/
 ```
 
-## Notebooks
+## What the Method Does
+
+1. Builds one target trajectory per entity.
+2. Mean-centers each trajectory to focus on shape rather than level.
+3. Computes a global mean-centered trajectory baseline.
+4. Scores each entity by its distance from that baseline.
+5. Builds lag, window-mean, change, and volatility features from explanatory variables.
+6. Trains compact random-forest surrogate models using the explanatory variables.
+7. Selects a forest that balances separation quality and rule complexity.
+8. Converts tree paths into readable subgroup rules.
+9. Ranks rules by subgroup size, trajectory divergence, concentration, and diversity.
+
+## Example Output
+
+A rule has the form:
 
 ```text
-notebooks/eda_world_bank_gdp_dolphin.ipynb
-notebooks/eda_cmie_dolphin.ipynb
-notebooks/run_cmie_dolphin.ipynb
-notebooks/run_world_bank.ipynb
+IF 10-year mean birth rate > 21.15
+AND 26-year mean internet use <= 15.10
+THEN the matching countries follow a GDP-per-capita trajectory that differs from the global baseline.
 ```
 
-Regenerate the EDA notebooks:
-
-```powershell
-python scripts/create_eda_notebooks.py
-```
-
-Execute the EDA notebooks:
-
-```powershell
-python -m jupyter nbconvert --to notebook --execute notebooks/eda_world_bank_gdp_dolphin.ipynb --inplace
-python -m jupyter nbconvert --to notebook --execute notebooks/eda_cmie_dolphin.ipynb --inplace
-```
-
-## Plot Regeneration
-
-Regenerate trajectory plots from existing rule and membership outputs:
-
-```powershell
-python scripts/regenerate_dolphin_trajectory_plots.py --config configs/world_bank_gdp.json --target gdp_per_capita --workspace-root .
-python scripts/regenerate_dolphin_trajectory_plots.py --config configs/cmie_income.json --target total_income --workspace-root .
-```
-
-## Data Schema
-
-World Bank config:
-
-```text
-country
-date
-GDP_current_US
-population
-access_to_electricity%
-birth_rate
-death_rate
-government_expenditure_on_education%
-government_health_expenditure%
-gini_index
-human_capital_index
-individuals_using_internet%
-inflation_annual%
-population_density
-rural_population
-tax_revenue%
-trade_in_services%
-voice_and_accountability_estimate
-```
-
-CMIE config:
-
-```text
-HH_ID
-MONTH_SLOT_DATE
-TOT_INC
-wage_share
-biz_share
-transfer_share
-capital_income_share
-TOT_N
-EMPLOYED_N
-MAX_EDU_LEVEL
-dominant_source_*
-income_quintile_*
-```
+The trajectory plots show the subgroup trend against the global mean-centered baseline. The forest plots show the questions used to form the rules.
